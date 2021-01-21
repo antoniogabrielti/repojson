@@ -1,0 +1,973 @@
+{
+"openapi": "3.0.1",
+"info": {
+"title": "Sistema Open Banking - Sicredi",
+"description": "API Responsável pelo domínio de contas do Open Banking",
+"license": {
+"name": "Apache License Version 2.0",
+"url": "https://www.apache.org/licenses/LICENSE-2.0\""
+},
+"version": "v1.0.0"
+},
+"externalDocs": {
+"description": "Mais informações sobre: Febraban - Open Banking",
+"url": "https://febraban.github.io/Open-Banking-/#introducao"
+},
+"servers": [
+{
+"url": "https://openbanking-accounts.stress.sicredi.cloud",
+"description": "Generated server url"
+}
+],
+"paths": {
+"/open-banking/products-services/1.0.0/business-accounts": {
+"get": {
+"tags": [
+"business-account-controller"
+],
+"summary": "Endpoint para consultar produtos das contas de pessoa jurídica.",
+"operationId": "getPersonalAccounts",
+"responses": {
+"200": {
+"description": "Requisição realizada com sucesso.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/BusinessAccountResponsePage"
+}
+}
+}
+},
+"400": {
+"description": "Não foram encontrados produtos de contas de pessoa jurídica.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrorResponseDTO"
+}
+}
+}
+},
+"500": {
+"description": "Ocorreu um erro interno ao buscar produtos de contas de pessoa jurídica",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrorResponseDTO"
+}
+}
+}
+}
+}
+}
+},
+"/open-banking/products-services/1.0.0/personal-accounts": {
+"get": {
+"tags": [
+"personal-account-controller"
+],
+"summary": "Endpoint para consultar produtos das contas de pessoa física.",
+"operationId": "getPersonalAccounts_1",
+"responses": {
+"200": {
+"description": "Requisição realizada com sucesso.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/PersonalAccountResponsePage"
+}
+}
+}
+},
+"400": {
+"description": "Não foram encontrados produtos de contas de pessoa física.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrorResponseDTO"
+}
+}
+}
+},
+"500": {
+"description": "Ocorreu um erro interno ao buscar produtos de contas de pessoa física",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ErrorResponseDTO"
+}
+}
+}
+}
+}
+}
+}
+},
+"components": {
+"schemas": {
+"BusinessAccount": {
+"required": [
+"fees",
+"incomeRates",
+"openingClosingChannels",
+"serviceBundles",
+"termsConditions",
+"transactionMethods",
+"type"
+],
+"type": "object",
+"properties": {
+"type": {
+"type": "string",
+"description": "Tipos de contas ofertadas para pessoas jurídicas, conforme Resolução 3.919 do Banco Central do Brasil.",
+"enum": [
+"CONTA_DEPOSITO_A_VISTA",
+"CONTA_POUPANCA",
+"CONTA_PAGAMENTO_PRE_PAGA",
+"CONTA_DEPOSITO_A_VISTA",
+"CONTA_POUPANCA",
+"CONTA_PAGAMENTO_PRE_PAGA"
+]
+},
+"fees": {
+"$ref": "#/components/schemas/FeesPersonalAccount"
+},
+"serviceBundles": {
+"type": "array",
+"description": "Nome dos pacotes de serviços.",
+"items": {
+"$ref": "#/components/schemas/ServiceBundleBusinessAccount"
+}
+},
+"openingClosingChannels": {
+"type": "array",
+"description": "Canais disponíveis para abertura e encerramento de contas.",
+"items": {
+"type": "string",
+"description": "Canais disponíveis para abertura e encerramento de contas.",
+"enum": [
+"DEPENDENCIAS_PROPRIAS",
+"CENTRAL_TELEFONICA",
+"CORRESPONDENTES_BANCARIOS",
+"INTERNET_BANKING",
+"MOBILE_BANKING",
+"CHAT",
+"OUTROS",
+"DEPENDENCIAS_PROPRIAS",
+"CORRESPONDENTES_BANCARIOS",
+"INTERNET_BANKING",
+"MOBILE_BANKING",
+"CENTRAL_TELEFONICA",
+"CHAT",
+"OUTROS"
+]
+},
+"enum": [
+"DEPENDENCIAS_PROPRIAS",
+"CORRESPONDENTES_BANCARIOS",
+"INTERNET_BANKING",
+"MOBILE_BANKING",
+"CENTRAL_TELEFONICA",
+"CHAT",
+"OUTROS"
+]
+},
+"additionalInfo": {
+"type": "string",
+"description": "Texto livre para complementar informação relativa ao Canal disponível, quando no campo 'openingClosingChannels' estiver preenchida a opção 'OUTROS'"
+},
+"transactionMethods": {
+"type": "array",
+"description": "Lista de formas de movimentação possíveis para a conta",
+"items": {
+"type": "string",
+"description": "Lista de formas de movimentação possíveis para a conta",
+"enum": [
+"MOVIMENTACAO_ELETRONICA",
+"MOVIMENTACAO_CHEQUE",
+"MOVIMENTACAO_CARTAO",
+"MOVIMENTACAO_PRESENCIAL",
+"MOVIMENTACAO_ELETRONICA",
+"MOVIMENTACAO_CHEQUE",
+"MOVIMENTACAO_CARTAO",
+"MOVIMENTACAO_PRESENCIAL"
+]
+},
+"enum": [
+"MOVIMENTACAO_ELETRONICA",
+"MOVIMENTACAO_CHEQUE",
+"MOVIMENTACAO_CARTAO",
+"MOVIMENTACAO_PRESENCIAL"
+]
+},
+"termsConditions": {
+"$ref": "#/components/schemas/TermsConditions"
+},
+"incomeRates": {
+"$ref": "#/components/schemas/IncomeRates"
+}
+},
+"description": "Instituição, pertencente à marca, responsável pela comercialização dos tipos de contas de pessoas jurídicas consultadas."
+},
+"BusinessAccountBrand": {
+"required": [
+"name"
+],
+"type": "object",
+"properties": {
+"name": {
+"type": "string",
+"description": "Nome da Marca reportada pelo participante do Open Banking.",
+"example": "Organização A"
+},
+"companies": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/BusinessAccountCompany"
+}
+}
+},
+"description": "Lista das organizações responsáveis pelas contas."
+},
+"BusinessAccountCompany": {
+"required": [
+"cnpjNumber",
+"name",
+"personalAccounts"
+],
+"type": "object",
+"properties": {
+"name": {
+"type": "string",
+"description": "Nome da Instituição, pertencente à marca, responsável pela comercialização das modalidades de Empréstimos",
+"example": "Empresa da Organização A"
+},
+"cnpjNumber": {
+"type": "string",
+"description": "O responsável pela comercialização das modalidades de Empréstimos",
+"example": "68141688000163"
+},
+"urlComplementaryList": {
+"type": "string",
+"description": "URL do link que conterá a lista complementar com os nomes e CNPJs agrupados sob o mesmo cnpjNumber.",
+"example": "https://example.com/mobile-banking"
+},
+"personalAccounts": {
+"type": "array",
+"description": "Lista de contas pessoa jurídica.",
+"items": {
+"$ref": "#/components/schemas/BusinessAccount"
+}
+}
+},
+"description": "Instituição, pertencente à marca, responsável pela comercialização dos tipos de contas de pessoas jurídicas consultadas."
+},
+"BusinessAccountDataOpenBanking": {
+"required": [
+"brand"
+],
+"type": "object",
+"properties": {
+"brand": {
+"$ref": "#/components/schemas/BusinessAccountBrand"
+}
+},
+"description": "Payload de retorno da requisição, dados retornados."
+},
+"BusinessAccountResponsePage": {
+"required": [
+"data",
+"links",
+"meta"
+],
+"type": "object",
+"properties": {
+"data": {
+"$ref": "#/components/schemas/BusinessAccountDataOpenBanking"
+},
+"links": {
+"$ref": "#/components/schemas/LinksPaginated"
+},
+"meta": {
+"$ref": "#/components/schemas/MetaPaginated"
+}
+},
+"description": "Response de retorno padrão para as requisições do Open Banking."
+},
+"Customer": {
+"required": [
+"rate"
+],
+"type": "object",
+"properties": {
+"rate": {
+"type": "string",
+"description": "Percentual dos clientes de cada faixa relativa ao serviço ofertado."
+}
+},
+"description": "Traz informações do percentual de clientes apurado em cada faixa."
+},
+"FeesPersonalAccount": {
+"required": [
+"otherService",
+"priorityServices"
+],
+"type": "object",
+"properties": {
+"priorityServices": {
+"type": "array",
+"description": "Lista Tarifas de serviços prioritários da conta",
+"items": {
+"$ref": "#/components/schemas/PriorityServicePersonalAccount"
+}
+},
+"otherService": {
+"type": "array",
+"description": "Lista Tarifas de outros serviços da conta",
+"items": {
+"$ref": "#/components/schemas/OtherServicePersonalAccount"
+}
+}
+},
+"description": "Tarifa cobrada na conta de pessoa física."
+},
+"IncomeRates": {
+"type": "object",
+"properties": {
+"savingAccount": {
+"type": "string",
+"description": "Descrição da Remuneração."
+},
+"prepaidPaymentAccount": {
+"type": "string",
+"description": "Percentual em favor do titular da conta de pagamento pré-paga."
+}
+},
+"description": "Valores dos percentuais de taxas."
+},
+"LinksPaginated": {
+"required": [
+"self"
+],
+"type": "object",
+"properties": {
+"self": {
+"type": "string",
+"description": "URI completo que gerou a resposta atual.",
+"example": "https://example.com/open-banking/<project>/<version>/<resource>?page=1&page-size=1000"
+},
+"first": {
+"type": "string",
+"description": "URI da primeira página que originou essa lista de resultados.",
+"example": "https://example.com/open-banking/<project>/<version>/<resource>?page=1&page-size=1000"
+},
+"prev": {
+"type": "string",
+"description": "URI da página anterior dessa lista de resultados.",
+"example": "https://example.com/open-banking/<project>/<version>/<resource>?page=1&page-size=1000"
+},
+"next": {
+"type": "string",
+"description": "URI da próxima página dessa lista de resultados.",
+"example": "https://example.com/open-banking/<project>/<version>/<resource>?page=1&page-size=1000"
+},
+"last": {
+"type": "string",
+"description": "URI da última página dessa lista de resultados.",
+"example": "https://example.com/open-banking/<project>/<version>/<resource>?page=1&page-size=1000"
+}
+},
+"description": "Response de links para a paginação que utiliza o padrão HATEOAS."
+},
+"MetaPaginated": {
+"required": [
+"totalPages",
+"totalRecords"
+],
+"type": "object",
+"properties": {
+"totalRecords": {
+"type": "integer",
+"description": "Número total de registros no resultado.",
+"format": "int32"
+},
+"totalPages": {
+"type": "integer",
+"description": "Número total de páginas no resultado.",
+"format": "int32"
+}
+},
+"description": "Response com totais para auxiliar a paginação."
+},
+"Price": {
+"required": [
+"currency",
+"value"
+],
+"type": "object",
+"properties": {
+"value": {
+"type": "string",
+"description": "Valor da tarifa cobrada, relativa ao Serviço"
+},
+"currency": {
+"type": "string",
+"description": "Moeda referente ao valor da Tarifa, segundo modelo ISO-4217.",
+"example": "'BRL', 'USD', 'EUR'"
+}
+},
+"description": "Valor da tarifa relativo ao serviço ofertado sobre a base de clientes no mês de referência."
+},
+"PriceBundle": {
+"required": [
+"currency",
+"customers",
+"interval",
+"mothlyFee"
+],
+"type": "object",
+"properties": {
+"interval": {
+"type": "string",
+"description": "Faixas de valor referentes a tarifa do Serviço Prioritário informada.",
+"example": "1_FAIXA, 2_FAIXA, 3_FAIXA e 4_FAIXA",
+"enum": [
+"1_FAIXA",
+"2_FAIXA",
+"3_FAIXA",
+"4_FAIXA",
+"1_FAIXA",
+"2_FAIXA",
+"3_FAIXA",
+"4_FAIXA"
+]
+},
+"mothlyFee": {
+"type": "string",
+"description": "Valor da mediana da tarifa mensal referente ao Pacote de Serviços."
+},
+"currency": {
+"type": "string",
+"description": "Moeda referente ao valor mínimo da Tarifa, segundo modelo ISO-4217.",
+"example": "'BRL', 'USD', 'EUR'"
+},
+"customers": {
+"$ref": "#/components/schemas/Customer"
+}
+},
+"description": "Nome dos pacotes de serviços."
+},
+"PriceInterval": {
+"required": [
+"currency",
+"customers",
+"interval",
+"value"
+],
+"type": "object",
+"properties": {
+"value": {
+"type": "string",
+"description": "Valor da tarifa cobrada, relativa ao Serviço"
+},
+"currency": {
+"type": "string",
+"description": "Moeda referente ao valor da Tarifa, segundo modelo ISO-4217.",
+"example": "'BRL', 'USD', 'EUR'"
+},
+"interval": {
+"type": "string",
+"description": "Faixas de valor referentes a tarifa do Serviço informada.",
+"enum": [
+"1_FAIXA",
+"2_FAIXA",
+"3_FAIXA",
+"4_FAIXA",
+"1_FAIXA",
+"2_FAIXA",
+"3_FAIXA",
+"4_FAIXA"
+]
+},
+"customers": {
+"$ref": "#/components/schemas/Customer"
+}
+},
+"description": "Tarifa de serviço prioritário da conta."
+},
+"ServiceBundleBusinessAccount": {
+"required": [
+"maximum",
+"minimum",
+"name",
+"prices",
+"services"
+],
+"type": "object",
+"properties": {
+"name": {
+"type": "string",
+"description": "Nome do Pacote de Serviços dado pela instituição"
+},
+"services": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/ServicesPersonalAccount"
+}
+},
+"prices": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/PriceBundle"
+}
+},
+"minimum": {
+"$ref": "#/components/schemas/Price"
+},
+"maximum": {
+"$ref": "#/components/schemas/Price"
+}
+},
+"description": "Nome dos pacotes de serviços."
+},
+"ServicesPersonalAccount": {
+"required": [
+"chargingTriggerInfo",
+"code",
+"eventLimitQuantity",
+"freeEventQuantity"
+],
+"type": "object",
+"properties": {
+"code": {
+"type": "string",
+"description": "Código que identifica o Serviço que compõe o Pacote de Serviços."
+},
+"eventLimitQuantity": {
+"type": "string",
+"description": "Quantidade de eventos previstos no Pacote de Serviços."
+},
+"freeEventQuantity": {
+"type": "string",
+"description": "Quantidade de eventos previstos no Pacote de Serviços com isenção de Tarifa."
+},
+"chargingTriggerInfo": {
+"type": "string",
+"description": "Fatos geradores de cobrança que incidem sobre serviço que compõe o Pacote de Serviços."
+}
+},
+"description": "Serviços"
+},
+"TermsConditions": {
+"required": [
+"closingProcessInfo",
+"elegibilityCriteriaInfo",
+"minimumBalance"
+],
+"type": "object",
+"properties": {
+"minimumBalance": {
+"$ref": "#/components/schemas/Price"
+},
+"elegibilityCriteriaInfo": {
+"type": "string",
+"description": "Critérios de elegibilidade para a aquisição do tipo de conta comercializado."
+},
+"closingProcessInfo": {
+"type": "string",
+"description": "Procedimentos de encerramento para o tipo de conta tratado."
+}
+},
+"description": "Termos e condições contratuais."
+},
+"ErrorDetail": {
+"required": [
+"code",
+"detail",
+"title"
+],
+"type": "object",
+"properties": {
+"code": {
+"type": "string",
+"description": "código de erro específico do endpoint."
+},
+"title": {
+"type": "string",
+"description": "título legível por humanos do erro deste erro específico."
+},
+"detail": {
+"type": "string",
+"description": "descrição legível por humanos deste erro específico."
+}
+},
+"description": "Payload com detalhe do erro para requisições no Open Banking."
+},
+"ErrorResponseDTO": {
+"required": [
+"errors",
+"meta"
+],
+"type": "object",
+"properties": {
+"errors": {
+"type": "array",
+"description": "Coleção com os detalhes dos erros ocorridos na requisição.",
+"items": {
+"$ref": "#/components/schemas/ErrorDetail"
+}
+},
+"meta": {
+"type": "object",
+"additionalProperties": {
+"type": "string",
+"description": "objeto contendo dados adicionais sobre o endpoint que seja relevante para o erro."
+},
+"description": "objeto contendo dados adicionais sobre o endpoint que seja relevante para o erro."
+}
+},
+"description": "Payload de retorno em caso de erro nas requisições do Open Banking."
+},
+"OtherServicePersonalAccount": {
+"required": [
+"chargingTriggerInfo",
+"maximum",
+"minimum",
+"name",
+"price"
+],
+"type": "object",
+"properties": {
+"name": {
+"type": "string",
+"description": "Nome atribuído a Outros Serviços disponíveis para os tipos de contas."
+},
+"code": {
+"type": "string",
+"description": "Sigla de identificação de Outros Serviços que incidem sobre os tipos de contas."
+},
+"chargingTriggerInfo": {
+"type": "string",
+"description": "Outros Fatos geradores de cobrança referentes aos Outros Serviços que incidem sobre as contas comercializadas."
+},
+"price": {
+"type": "array",
+"description": "Valor da tarifa cobrada referente aos Outros Serviços.",
+"items": {
+"$ref": "#/components/schemas/PriceInterval"
+}
+},
+"minimum": {
+"$ref": "#/components/schemas/Price"
+},
+"maximum": {
+"$ref": "#/components/schemas/Price"
+}
+},
+"description": "Tarifas de outros serviços da conta de pessoa física."
+},
+"PersonalAccount": {
+"required": [
+"additionalInfo",
+"fees",
+"openCloseChannels",
+"serviceBundles",
+"termsConditions",
+"transactionMethods",
+"type"
+],
+"type": "object",
+"properties": {
+"type": {
+"type": "string",
+"description": "Tipos de contas ofertadas para pessoas físicas, conforme Resolução 3.919 do Banco Central do Brasil.",
+"enum": [
+"CONTA_DEPOSITO_A_VISTA",
+"CONTA_POUPANCA",
+"CONTA_PAGAMENTO_PRE_PAGA"
+]
+},
+"fees": {
+"$ref": "#/components/schemas/FeesPersonalAccount"
+},
+"serviceBundles": {
+"type": "array",
+"description": "Nome dos pacotes de serviços.",
+"items": {
+"$ref": "#/components/schemas/ServiceBundlePersonalAccount"
+}
+},
+"openCloseChannels": {
+"type": "array",
+"description": "Canais disponíveis para abertura e encerramento de contas.",
+"items": {
+"type": "string",
+"description": "Canais disponíveis para abertura e encerramento de contas.",
+"enum": [
+"DEPENDENCIAS_PROPRIAS",
+"CENTRAL_TELEFONICA",
+"CORRESPONDENTES_BANCARIOS",
+"INTERNET_BANKING",
+"MOBILE_BANKING",
+"CHAT",
+"OUTROS"
+]
+}
+},
+"additionalInfo": {
+"type": "string",
+"description": "Texto livre para complementar informação relativa ao Canal disponível."
+},
+"transactionMethods": {
+"type": "array",
+"description": "Lista de formas de movimentação possíveis para a conta.",
+"items": {
+"type": "string",
+"description": "Lista de formas de movimentação possíveis para a conta.",
+"enum": [
+"MOVIMENTACAO_ELETRONICA",
+"MOVIMENTACAO_CHEQUE",
+"MOVIMENTACAO_CARTAO",
+"MOVIMENTACAO_PRESENCIAL"
+]
+}
+},
+"termsConditions": {
+"$ref": "#/components/schemas/TermsConditions"
+},
+"incomeRates": {
+"$ref": "#/components/schemas/IncomeRates"
+}
+},
+"description": "Conta de pessoa física."
+},
+"PersonalAccountBrand": {
+"required": [
+"name"
+],
+"type": "object",
+"properties": {
+"name": {
+"type": "string",
+"description": "Nome da Marca reportada pelo participante do Open Banking.",
+"example": "Organização A"
+},
+"companies": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/PersonalAccountCompany"
+}
+}
+},
+"description": "Lista das organizações responsáveis pelas contas."
+},
+"PersonalAccountCompany": {
+"required": [
+"cnpjNumber",
+"name",
+"personalAccounts"
+],
+"type": "object",
+"properties": {
+"name": {
+"type": "string",
+"description": "Nome da Instituição, pertencente à marca, responsável pela comercialização das modalidades de Empréstimos",
+"example": "Empresa da Organização A"
+},
+"cnpjNumber": {
+"type": "string",
+"description": "O responsável pela comercialização das modalidades de Empréstimos",
+"example": "68141688000163"
+},
+"urlComplementaryList": {
+"type": "string",
+"description": "URL do link que conterá a lista complementar com os nomes e CNPJs agrupados sob o mesmo cnpjNumber.",
+"example": "https://example.com/mobile-banking"
+},
+"personalAccounts": {
+"type": "array",
+"description": "Lista de contas pessoa física.",
+"items": {
+"$ref": "#/components/schemas/PersonalAccount"
+}
+}
+},
+"description": "Instituição, pertencente à marca, responsável pela comercialização dos tipos de contas de pessoas física consultadas."
+},
+"PersonalAccountDataOpenBanking": {
+"required": [
+"brand"
+],
+"type": "object",
+"properties": {
+"brand": {
+"$ref": "#/components/schemas/PersonalAccountBrand"
+}
+},
+"description": "Payload de retorno da requisição, dados retornados."
+},
+"PersonalAccountResponsePage": {
+"required": [
+"data",
+"links",
+"meta"
+],
+"type": "object",
+"properties": {
+"data": {
+"$ref": "#/components/schemas/PersonalAccountDataOpenBanking"
+},
+"links": {
+"$ref": "#/components/schemas/LinksPaginated"
+},
+"meta": {
+"$ref": "#/components/schemas/MetaPaginated"
+}
+},
+"description": "Response de retorno padrão para as requisições do Open Banking."
+},
+"PriorityServicePersonalAccount": {
+"required": [
+"chargingTriggerInfo",
+"code",
+"maximum",
+"minimum",
+"name",
+"price"
+],
+"type": "object",
+"properties": {
+"code": {
+"type": "string",
+"description": "Sigla de identificação do Serviço Prioritário, segundo Resolução 3.919 do Bacen",
+"enum": [
+"CADASTRO",
+"2_VIA_CARTAO_DEBITO",
+"2_VIA_CARTAO_POUPANCA",
+"EXCLUSAO_CCF",
+"SUSTACAO_REVOGACAO",
+"FOLHA_CHEQUE",
+"CHEQUE_ADMINISTRATIVO",
+"CHEQUE_VISADO",
+"SAQUE_PESSOAL",
+"SAQUE_TERMINAL",
+"SAQUE_CORRESPONDENTE",
+"DEPOSITO_IDENTIFICADO",
+"EXTRATO_MES_P",
+"EXTRATO_MES_E",
+"EXTRATO_MES_C",
+"EXTRATO_MOVIMENTO_P",
+"EXTRATO_MOVIMENTO_E",
+"EXTRATO_MOVIMENTO_C",
+"MICROFILME",
+"DOC_PESSOAL",
+"DOC_ELETRONICO",
+"DOC_INTERNET",
+"TED_PESSOAL",
+"TED_ELETRONICO",
+"TED_INTERNET",
+"DOC_TED_AGENDADO_P",
+"DOC_TED_AGENDADO_E",
+"DOC_TED_AGENDADO_I",
+"TRANSF_RECURSO_P",
+"TRANSF_RECURSO_E",
+"ORDEM_PAGAMENTO"
+]
+},
+"name": {
+"type": "string",
+"description": "Nome atribuído aos Serviços Prioritários disponíveis para os tipos de contas.",
+"enum": [
+"CONFECCAO_CADASTRO_INICIO_RELACIONAMENTO",
+"FORNECIMENTO_2_VIA_CARTAO_FUNCAO_DEBITO",
+"FORNECIMENTO_2_VIA_CARTAO_FUNCAO_MOVIMENTACAO_CONTA_POUPANCA",
+"EXCLUSAO_CADASTRO_EMITENTES_CHEQUES_SEM_FUNDO_CCF",
+"CONTRA_ORDEM_REVOGACAO_E_OPOSICAO_OU_SUSTACAO_PAGAMENTO_CHEQUE",
+"FORNECIMENTO_FOLHAS_CHEQUE",
+"CHEQUE_ADMINISTRATIVO",
+"CHEQUE_VISADO",
+"SAQUE_CONTA_DEPOSITO_A_VISTA_POUPANCA_PRESENCIAL_OU_PESSOAL",
+"SAQUE_CONTA_DEPOSITO_A_VISTA_POUPANCA_TERMINAL_AUTOATENDIMENTO",
+"SAQUE_CONTA_DEPOSITO_A_VISTA_POUPANCA_CORRESPONDENTES_PAIS",
+"DEPOSITO_IDENTIFICADO",
+"FORNECIMENTO_EXTRATO_MENSAL_CONTA_DEPOSITOS_A_VISTA_E_POUPANCA_PRESENCIAL_OU_PESSOAL",
+"FORNECIMENTO_EXTRATO_MENSAL_CONTA_DEPOSITOS_A_VISTA_E_POUPANCA_TERMINAL_AUTOATENDIMENTO",
+"FORNECIMENTO_EXTRATO_MENSAL_CONTA_DEPOSITOS_A_VISTA_E_POUPANCA_CORRESPONDENTES_PAIS",
+"FORNECIMENTO_EXTRATO_DE_UM_PERIODO_CONTA_DEPOSITOS_A_VISTA_E_POUPANCA_PRESENCIAL_OU_PESSOAL",
+"FORNECIMENTO_EXTRATO_DE_UM_PERIODO_CONTA_DEPOSITOS_A_VISTA_E_POUPANCA_TERMINAL_AUTOATENDIMENTO",
+"FORNECIMENTO_EXTRATO_DE_UM_PERIODO_CONTA_DEPOSITOS_A_VISTA_E_POUPANCA_CORRESPONDENTES_PAIS",
+"FORNECIMENTO_COPIA_MICROFILME_MICROFICHA_ASSEMELHADO",
+"TRANSFERENCIA_DOC_PESSOAL_OU_PRESENCIAL",
+"TRANSFERENCIA_DOC_TERMINAL_AUTOATENDIMENTO_OUTROS_MEIOS_ELETRONICOS",
+"TRANSFERENCIA_DOC_INTERNET",
+"TRANSFERENCIA_TED_PESSOAL_OU_PRESENCIAL",
+"TRANSFERENCIA_TED_TERMINAL_AUTOATENDIMENTO_OUTROS_MEIOS_ELETRONICOS",
+"TRANSFERENCIA_TED_INTERNET",
+"TRANSFERENCIA_DOC_TED_PESSOAL_OU_PRESENCIAL",
+"TRANSFERENCIA_DOC_TED_TERMINAL_AUTOATENDIMENTO_OUTROS_MEIOS_ELETRONICOS",
+"TRANSFERENCIA_DOC_TED_INTERNET",
+"TRANSFERENCIA_ENTRE_CONTAS_PROPRIA_INSTITUICAO_PESSOAL_OU_PRESENCIAL",
+"TRANSFERENCIA_ENTRE_CONTAS_PROPRIA_INSTITUICAO_TERMINAL_AUTOATENDIMENTO_OUTROS_MEIOS_ELETRONICOS_INCLUSIVE_INTERNET",
+"ORDEM_PAGAMENTO"
+]
+},
+"price": {
+"type": "array",
+"description": "Lista Tarifas de serviços prioritários da conta",
+"items": {
+"$ref": "#/components/schemas/PriceInterval"
+}
+},
+"minimum": {
+"$ref": "#/components/schemas/Price"
+},
+"maximum": {
+"$ref": "#/components/schemas/Price"
+},
+"chargingTriggerInfo": {
+"type": "string",
+"description": "Fatos geradores de cobrança que incidem sobre os serviços prioritários, segundo Resolução 3.919 do Bacen, para pessoa física."
+}
+},
+"description": "Tarifa de serviços prioritários da conta de pessoa física."
+},
+"ServiceBundlePersonalAccount": {
+"required": [
+"maximum",
+"minimum",
+"name",
+"prices",
+"services"
+],
+"type": "object",
+"properties": {
+"name": {
+"type": "string",
+"description": "Nome do conjunto de serviços"
+},
+"services": {
+"type": "array",
+"description": "Lista de serviços",
+"items": {
+"$ref": "#/components/schemas/ServicesPersonalAccount"
+}
+},
+"prices": {
+"type": "array",
+"description": "Valor mensal da tarifa referente ao Pacote de Serviços",
+"items": {
+"$ref": "#/components/schemas/PriceBundle"
+}
+},
+"minimum": {
+"$ref": "#/components/schemas/Price"
+},
+"maximum": {
+"$ref": "#/components/schemas/Price"
+}
+},
+"description": "Nome dos pacotes de serviços."
+}
+}
+}
+}
